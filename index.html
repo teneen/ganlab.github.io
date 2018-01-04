@@ -45,12 +45,14 @@
 		</nav>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-2">
-				</div>
-				<div class="col-md-8">
+				<div class="col-md-9">
 					<div class="ct-chart"></div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-3">
+					<h4>Tabel harga</h4>
+					<br/>
+					<div id="tabel_harga">
+					</div>
 				</div>
 			</div>
 		</div>
@@ -67,14 +69,18 @@
 
 			time.push(nit);
 			price.push(nip);
+			
+			$('#tabel_harga').append(nip + '<hr/>');
 		}
 
-		new Chartist.Line('.ct-chart', {
+		new Chartist.Line('.ct-chart', 
+		{
 			labels: time,
 			series: [
 				price,
 			]
-		}, {
+		},
+		{
 			lineSmooth: false,
 			axisX: {
 				showGrid: false,
