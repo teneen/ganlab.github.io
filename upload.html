@@ -34,8 +34,15 @@
 					loginIFrame.src		= "about:blank";
 					loginIFrame.id		= "submitFrame";
 					loginIFrame.name	= "submitFrame";
-					loginIFrame.onload	= console.log('hello');
-					loginIFrame.onerror	= console.log('hello error');
+					loginIFrame.onload	= function(){
+					   var that = $(this)[0];
+					   try{
+						that.contentDocument;
+					   }
+					   catch(err){
+						console.log(err); 
+					   }
+					}
 					document.body.appendChild(loginIFrame);
 					
 					// create form
