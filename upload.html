@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+</head>
+<body>
+    <input type="file" id="file">
+
+    <script type="text/javascript">
+        $(function(){
+            var url = 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec';
+
+            $('#file').on("change", function() {
+                
+				var parameters = {};
+				
+				var file = this.files[0];
+				
+				// format
+				parameters.format = file.name.split('.').pop();
+				
+				// file
+                var fr = new FileReader();
+				
+                fr.onload = function(e) {
+                    
+					parameters.file = e.target.result.replace(/^.*,/, '');
+                    
+					// create iframe
+					var loginIFrame		= document.createElement('iframe');
+					loginIFrame.style	= "display:none";
+					loginIFrame.src		= "about:blank";
+					loginIFrame.id		= "submitFrame";
+					loginIFrame.name	= "submitFrame";
+					document.body.appendChild(loginIFrame);
+					
+					// create form
+					var idocument = loginIFrame.contentWindow.document;
+					loginForm = idocument.createElement("form");
+					loginForm.setAttribute("target", "submitFrame");
+					loginForm.setAttribute("method", "POST");
+					loginForm.setAttribute("action", url);
+					for(var key in parameters)
+					{
+						var hiddenField = idocument.createElement("input");
+						hiddenField.setAttribute('type', "hidden");
+						hiddenField.setAttribute('name', key);
+						hiddenField.setAttribute('value', parameters[key]);
+						loginForm.appendChild(hiddenField);
+					}
+					loginIFrame.appendChild(loginForm);
+					
+					// submit form
+					loginForm.submit();
+					
+                }
+                fr.readAsDataURL(file);
+            });
+        });
+    </script>
+</body>
+</html>
