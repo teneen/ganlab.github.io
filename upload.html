@@ -28,7 +28,7 @@
 					parameters.file = e.target.result.replace(/^.*,/, '');
                     
 					// create iframe
-					var loginIFrame		= document.createElement('iframe');
+					loginIFrame		= document.createElement('iframe');
 					loginIFrame.style	= "display:none";
 					loginIFrame.src		= "about:blank";
 					loginIFrame.id		= "submitFrame";
@@ -36,7 +36,7 @@
 					document.body.appendChild(loginIFrame);
 					
 					// create form
-					var idocument = loginIFrame.contentWindow.document;
+					idocument = loginIFrame.contentWindow.document;
 					loginForm = idocument.createElement("form");
 					loginForm.setAttribute("target", "submitFrame");
 					loginForm.setAttribute("method", "POST");
