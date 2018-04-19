@@ -37,9 +37,13 @@
 					loginIFrame.onload	= function(){
 					   var that = $(this)[0];
 					   try{
+						console.log('try');
+						console.log(that);
+						
 						that.contentDocument;
 					   }
 					   catch(err){
+						 console.log('iuiui');
 						console.log(err); 
 					   }
 					}
