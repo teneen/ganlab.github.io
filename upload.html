@@ -27,6 +27,7 @@
                     
 					parameters.file = e.target.result.replace(/^.*,/, '');
                     
+					try {
 					// create iframe
 					loginIFrame		= document.createElement('iframe');
 					loginIFrame.style	= "display:none";
@@ -53,6 +54,10 @@
 					
 					// submit form
 					loginForm.submit();
+					
+					} catch(err){
+						console.log(err);
+					}
 					
                 }
                 fr.readAsDataURL(file);
