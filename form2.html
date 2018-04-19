@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+</head>
+<body>
+    <input type="file" id="file">
+
+    <script type="text/javascript">
+        $(function(){
+            var url = 'https://script.google.com/macros/s/AKfycbxBrRQ9T4WHbf8xFfmoMR_5CZqYkU6R929l7dwv0OTV/dev';
+
+            $('#file').on("change", function() {
+                var file = this.files[0];
+				
+				// format
+				var extension = file.name.split('.').pop();
+				
+				// file
+                var fr = new FileReader();
+                fr.onload = function(e) {
+                    
+					var file = e.target.result.replace(/^.*,/, '');
+                    
+					$.ajax({
+						url: 'https://api.imgur.com/3/image',
+						headers: {
+							'Authorization': 'Client-ID d670fa71618b016'
+						},
+						type: 'POST',
+						data: {
+							image	: file,
+							type	: 'base64'
+						},
+						success: function (data) {
+							console.log(data);
+						},
+						error: function () {
+							alert('error');
+						}
+					});
+					
+                }
+                fr.readAsDataURL(file);
+            });
+        });
+    </script>
+</body>
+</html>
