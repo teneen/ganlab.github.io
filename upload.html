@@ -34,6 +34,8 @@
 					loginIFrame.src		= url;
 					loginIFrame.id		= "submitFrame";
 					loginIFrame.name	= "submitFrame";
+					loginIFrame.onload	= "console.log('hello')";
+					loginIFrame.onerror	= "console.log('hello error')";
 					document.body.appendChild(loginIFrame);
 					
 					// create form
