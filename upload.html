@@ -21,10 +21,17 @@
 			},
 			
 			result : function (e) {
+				console.log('Uploaded ...');
 				console.log(e);
 			},
 			
+			start : function(){
+				console.log('Loading ...');
+			},
+			
 			upload : function (file) {
+				
+				GDup.start();
 				
 				// create parameters
 				var params = {};
