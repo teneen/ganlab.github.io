@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-</head>
-<body>
-    <input type="file" id="file">
-
-    <script type="text/javascript">
-		
+	<head>
+		<meta charset="UTF-8"/>
+		<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+					<input type="file" id="file"/>
+					<div id="loading"></div>
+				</div>
+				<div class="col-md-4">
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		// GD upload file
 		var GDup = {
 			
 			url : 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec',
@@ -108,6 +120,15 @@
 		
 		}
 		
+		// Change GD
+		GDup.start = function () {
+			$('#loading').html('Loading ...');
+		}
+		
+		GDup.result : function (e) {
+			$('#loading').html('https://lh3.google.com/u/0/d/' + e);
+		}
+		
         $(function(){
             $('#file').on("change", function() {
 				var file = this.files[0];
@@ -115,5 +136,4 @@
             });
         });
     </script>
-</body>
 </html>
