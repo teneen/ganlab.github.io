@@ -56,7 +56,8 @@
 						upIFrame.src	= "about:blank";
 						upIFrame.id		= "upIFrame" + name;
 						upIFrame.name	= "upIFrame" + name;
-						upIFrame.onload	= function(){
+						upIFrame.onload	= function() {
+							console.log(this);
 						   var ini = $(this)[0];
 						   try {
 							   ini.contentDocument;
