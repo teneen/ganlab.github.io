@@ -1,96 +1,160 @@
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Harga BTC sejam terakhir</title>
+		<meta charset="UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>GanLab - Free File Sharing</title>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-		<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"/>
-		<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
-		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
 	</head>
 	<body>
-		<!-- Fixed navbar -->
-		<nav class="navbar navbar-inverse">
-		  <div class="container">
-			<div class="navbar-header">
-			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			  </button>
-			  <a class="navbar-brand" href="#">Bootstrap theme</a>
-			</div>
-			<div id="navbar" class="navbar-collapse collapse">
-			  <ul class="nav navbar-nav">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="#about">About</a></li>
-				<li><a href="#contact">Contact</a></li>
-				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-				  <ul class="dropdown-menu">
-					<li><a href="#">Action</a></li>
-					<li><a href="#">Another action</a></li>
-					<li><a href="#">Something else here</a></li>
-					<li role="separator" class="divider"></li>
-					<li class="dropdown-header">Nav header</li>
-					<li><a href="#">Separated link</a></li>
-					<li><a href="#">One more separated link</a></li>
-				  </ul>
-				</li>
-			  </ul>
-			</div><!--/.nav-collapse -->
-		  </div>
-		</nav>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-9">
-					<div class="ct-chart"></div>
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-6 text-center" style="padding-top : 30px">
+					<h2>Free File Sharing</h2>
+					<br/>
+					<label for="uploadFile">
+						<input id="uploadFile" type="file" style="display:none"/>
+						<a class="btn btn-primary btn-lg">
+							<span class="glyphicon glyphicon-upload"></span> UPLOAD
+						</a>
+					</label>
+					<br/>
+					<br/>
+					<div id="loading"></div>
 				</div>
 				<div class="col-md-3">
-					<h4>Tabel harga</h4>
-					<br/>
-					<div id="tabel_harga">
-					</div>
 				</div>
 			</div>
 		</div>
 	</body>
-	<script>
-	$.getJSON('https://api2.bitcoin.co.id/api/btc_idr/hourly_chart_data', function (data) {
-
-		var time = [];
-		var price = [];
-		for (i in data) {
-			var ni = data[i];
-			var nit = ni[0];
-			var nip = ni[1];
-
-			time.push(nit);
-			price.push(nip);
+	<script type="text/javascript">
+		// GD upload file
+		var GDup = {
 			
-			$('#tabel_harga').append(nip + '<hr/>');
-		}
-
-		new Chartist.Line('.ct-chart', 
-		{
-			labels: time,
-			series: [
-				price,
-			]
-		},
-		{
-			lineSmooth: false,
-			axisX: {
-				showGrid: false,
-				showLabel: false
+			params : {},
+			
+			url : 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec',
+			
+			mid : function (length){
+				var text = '';
+				var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+				for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+				return text;
 			},
-			chartPadding: {
-				right: 40
+			
+			result : function (e) {
+				console.log('Uploaded ...');
+				console.log(e);
+			},
+			
+			start : function(){
+				console.log('Loading ...');
+			},
+			
+			upload : function (file) {
+				
+				GDup.start();
+				
+				// Get extension
+				GDup.params.ext = file.name.split('.').pop();
+				
+				// File
+                var fr = new FileReader();
+				
+                fr.onload = function(e) {
+                    
+					GDup.params.file = e.target.result.replace(/^.*,/, '');
+                    
+					try {
+						
+						// Date
+						var d    = new Date();
+						var date = d.getFullYear() + '_' + d.getMonth() + '_' + d.getDate() + '_';
+						
+						// Create file name
+						var name = date + GDup.mid(30);
+						
+						// Name
+						GDup.params.name = name;
+						
+						// Create iframe
+						var upIFrame	= document.createElement('iframe');
+						upIFrame.style	= "display:none; width:0px";
+						upIFrame.src	= "about:blank";
+						upIFrame.id		= "upIFrame" + name;
+						upIFrame.name	= "upIFrame" + name;
+						upIFrame.onload	= function() {
+							var ini = this;
+							try {
+								ini.contentDocument;
+							} catch(err){
+								GDup.params.file = 'no';
+								var request = jQuery.ajax({
+									crossDomain	: true,
+									url			: GDup.url + '?' + jQuery.param(GDup.params),
+									method		: "GET",
+									dataType	: "jsonp"
+								});
+						   }
+						}
+						document.body.appendChild(upIFrame);
+						
+						// Create form
+						var idocument = upIFrame.contentWindow.document;
+						loginForm = idocument.createElement("form");
+						loginForm.setAttribute("target", "upIFrame" + name);
+						loginForm.setAttribute("method", "POST");
+						loginForm.setAttribute("action", GDup.url);
+						for(var key in GDup.params)
+						{
+							var hiddenField = idocument.createElement("input");
+							hiddenField.setAttribute('type', "hidden");
+							hiddenField.setAttribute('name', key);
+							hiddenField.setAttribute('value', GDup.params[key]);
+							loginForm.appendChild(hiddenField);
+						}
+						upIFrame.appendChild(loginForm);
+						
+						// submit form
+						loginForm.submit();
+					
+					} catch(err){
+						console.log(err);
+					}
+					
+                }
+                fr.readAsDataURL(file);
 			}
-		});
-
-	});
-	</script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		
+		}
+		
+		// Change GD
+		GDup.start = function () {
+			$('#loading').html('Loading ...');
+		}
+		
+		GDup.result = function (e) {
+			var extImage = ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg'];
+			var html = '';
+			if (extImage.indexOf(GDup.params.ext) >= 0) {
+				html += '<img src="https://drive.google.com/thumbnail?id=' + e + '" style="max-width:100%"/>';
+				html += '<br/><br/>';
+			}	
+			html += '<code><pre>https://drive.google.com/file/d/' + e + '/view</pre></code>';
+			html += '<br/><br/>';
+			html += '<a href="https://drive.google.com/file/d/' + e + '/view" target="_blank" class="btn btn-success">View</a>';
+			$('#loading').html(html);
+		}
+		
+        $(function(){
+            $('#uploadFile').on("change", function() {
+				var file = this.files[0];
+				GDup.upload(file);
+            });
+        });
+    </script>
 </html>
