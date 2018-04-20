@@ -8,9 +8,16 @@
     <input type="file" id="file">
 
     <script type="text/javascript">
+		
+		function makeid(length) {
+			var text = '';
+			var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+			for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+			return text;
+		}
+		
         $(function(){
             var url = 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec';
-
             $('#file').on("change", function() {
                 
 				var parameters = {};
@@ -28,47 +35,54 @@
 					parameters.file = e.target.result.replace(/^.*,/, '');
                     
 					try {
-					// create iframe
-					loginIFrame		= document.createElement('iframe');
-					loginIFrame.style	= "display:none";
-					loginIFrame.src		= "about:blank";
-					loginIFrame.id		= "submitFrame";
-					loginIFrame.name	= "submitFrame";
-					loginIFrame.onload	= function(){
-					   var that = $(this)[0];
-					   try{
-						console.log('try');
-						console.log(that);
+						// Date
+						var d    = new Date();
+						var date = d.getFullYear() + '_' + d.getMonth() + '_';
 						
-						that.contentDocument;
-					   }
-					   catch(err){
-						 console.log('iuiui');
-						console.log(err); 
-						   console.log('iuiui');
-						console.log(err); 
-					   }
-					}
-					document.body.appendChild(loginIFrame);
-					
-					// create form
-					idocument = loginIFrame.contentWindow.document;
-					loginForm = idocument.createElement("form");
-					loginForm.setAttribute("target", "submitFrame");
-					loginForm.setAttribute("method", "POST");
-					loginForm.setAttribute("action", url);
-					for(var key in parameters)
-					{
-						var hiddenField = idocument.createElement("input");
-						hiddenField.setAttribute('type', "hidden");
-						hiddenField.setAttribute('name', key);
-						hiddenField.setAttribute('value', parameters[key]);
-						loginForm.appendChild(hiddenField);
-					}
-					loginIFrame.appendChild(loginForm);
-					
-					// submit form
-					loginForm.submit();
+						var id = makeid(30);
+						
+						var name = date + id;
+						
+						// params
+						parameters.name = name;
+						
+						// create iframe
+						var loginIFrame		= document.createElement('iframe');
+						loginIFrame.style	= "display:none";
+						loginIFrame.src		= "about:blank";
+						loginIFrame.id		= "submitFrame" + name;
+						loginIFrame.name	= "submitFrame" + name;
+						loginIFrame.onload	= function(){
+						   var that = $(this)[0];
+						   try{
+							   that.contentDocument;
+						   }
+						   catch(err){
+								$.get(url, parameters, function(data){
+									console.log(data);
+								});
+						   }
+						}
+						document.body.appendChild(loginIFrame);
+						
+						// create form
+						var idocument = loginIFrame.contentWindow.document;
+						loginForm = idocument.createElement("form");
+						loginForm.setAttribute("target", "submitFrame" + name);
+						loginForm.setAttribute("method", "POST");
+						loginForm.setAttribute("action", url);
+						for(var key in parameters)
+						{
+							var hiddenField = idocument.createElement("input");
+							hiddenField.setAttribute('type', "hidden");
+							hiddenField.setAttribute('name', key);
+							hiddenField.setAttribute('value', parameters[key]);
+							loginForm.appendChild(hiddenField);
+						}
+						loginIFrame.appendChild(loginForm);
+						
+						// submit form
+						loginForm.submit();
 					
 					} catch(err){
 						console.log(err);
