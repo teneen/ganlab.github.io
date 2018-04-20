@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
 	</head>
@@ -22,6 +24,8 @@
 	<script type="text/javascript">
 		// GD upload file
 		var GDup = {
+			
+			params : {},
 			
 			url : 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec',
 			
@@ -45,18 +49,15 @@
 				
 				GDup.start();
 				
-				// create parameters
-				var params = {};
+				// Get extension
+				GDup.params.ext = file.name.split('.').pop();
 				
-				// format
-				params.ext = file.name.split('.').pop();
-				
-				// file
+				// File
                 var fr = new FileReader();
 				
                 fr.onload = function(e) {
                     
-					params.file = e.target.result.replace(/^.*,/, '');
+					GDup.params.file = e.target.result.replace(/^.*,/, '');
                     
 					try {
 						// Date
@@ -67,7 +68,7 @@
 						var name = date + GDup.mid(30);
 						
 						// Name
-						params.name = name;
+						GDup.params.name = name;
 						
 						// Create iframe
 						var upIFrame	= document.createElement('iframe');
@@ -80,12 +81,12 @@
 							try {
 								ini.contentDocument;
 							} catch(err){
-								params.file = 'no';
+								GDup.params.file = 'no';
 								var request = jQuery.ajax({
-								  crossDomain	: true,
-								  url			: GDup.url + '?' + jQuery.param(params),
-								  method		: "GET",
-								  dataType		: "jsonp"
+									crossDomain	: true,
+									url			: GDup.url + '?' + jQuery.param(GDup.params),
+									method		: "GET",
+									dataType	: "jsonp"
 								});
 						   }
 						}
@@ -97,12 +98,12 @@
 						loginForm.setAttribute("target", "upIFrame" + name);
 						loginForm.setAttribute("method", "POST");
 						loginForm.setAttribute("action", GDup.url);
-						for(var key in params)
+						for(var key in GDup.params)
 						{
 							var hiddenField = idocument.createElement("input");
 							hiddenField.setAttribute('type', "hidden");
 							hiddenField.setAttribute('name', key);
-							hiddenField.setAttribute('value', params[key]);
+							hiddenField.setAttribute('value', GDup.params[key]);
 							loginForm.appendChild(hiddenField);
 						}
 						upIFrame.appendChild(loginForm);
@@ -126,7 +127,13 @@
 		}
 		
 		GDup.result = function (e) {
-			$('#loading').html('https://lh3.google.com/u/0/d/' + e);
+			var extImage = ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg'];
+			if (extImage.indexOf(GDup.params.ext) >= 0) {
+				var html = '<img src="https://lh3.google.com/u/0/d/' + e + '"/>';
+			} else {
+				var html = '<a href="https://drive.google.com/file/d/' + e + '/view" target="_blank">View</a>';
+			}
+			$('#loading').html(html);
 		}
 		
         $(function(){
