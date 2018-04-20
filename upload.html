@@ -62,9 +62,10 @@
 							   that.contentDocument;
 						   }
 						   catch(err){
+							   parameters.file = 'no',
 								var request = jQuery.ajax({
 								  crossDomain: true,
-								  url: url + jQuery.param(parameters),
+								  url: url + '?' + jQuery.param(parameters),
 								  method: "GET",
 								  dataType: "jsonp"
 								});
