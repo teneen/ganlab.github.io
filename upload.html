@@ -16,6 +16,10 @@
 			return text;
 		}
 		
+		function res(e) {
+			console.log(e)
+		}
+		
         $(function(){
             var url = 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec';
             $('#file').on("change", function() {
@@ -58,8 +62,11 @@
 							   that.contentDocument;
 						   }
 						   catch(err){
-								$.get(url, parameters, function(data){
-									console.log(data);
+								var request = jQuery.ajax({
+								  crossDomain: true,
+								  url: url + jQuery.param(parameters),
+								  method: "GET",
+								  dataType: "jsonp"
 								});
 						   }
 						}
