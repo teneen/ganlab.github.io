@@ -58,6 +58,7 @@
 						upIFrame.name	= "upIFrame" + name;
 						upIFrame.onload	= function() {
 							console.log(this);
+							console.log($(this)[0]);
 						   var ini = $(this)[0];
 						   try {
 							   ini.contentDocument;
