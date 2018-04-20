@@ -2,9 +2,10 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
+		<title>GanLab - Free File Sharing</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
-		<title>GanLab - Free File Sharing</title>
+		<meta name="description" content="GanLab is Free, simple and fast file sharing."/>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
 	</head>
@@ -146,7 +147,7 @@
 			}	
 			html += '<pre>https://drive.google.com/file/d/' + e + '/view</pre>';
 			html += '<br/>';
-			html += '<a href="https://drive.google.com/file/d/' + e + '/view" target="_blank" class="btn btn-success">View</a>';
+			html += '<a href="https://drive.google.com/file/d/' + e + '/view" target="_blank" class="btn btn-success"><span class="glyphicon glyphicon-zoom-in"></span> View</a>';
 			html += '<br/><br/>';
 			$('#loading').html(html);
 		}
