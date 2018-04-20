@@ -9,85 +9,84 @@
 
     <script type="text/javascript">
 		
-		function makeid(length) {
-			var text = '';
-			var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-			for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
-			return text;
-		}
-		
-		function res(e) {
-			console.log(e)
-		}
-		
-        $(function(){
-            var url = 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec';
-            $('#file').on("change", function() {
-                
-				var parameters = {};
+		var GDup = {
+			
+			url : 'https://script.google.com/macros/s/AKfycbwL2RCN-bl2bJs5ZGZJxkemUxjDr0jgv0U9BkyyL6b5CeHBsrWr/exec',
+			
+			mid : function (length){
+				var text = '';
+				var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+				for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+				return text;
+			},
+			
+			result : function (e) {
+				console.log(e);
+			},
+			
+			upload : function (file) {
 				
-				var file = this.files[0];
+				// create parameters
+				var params = {};
 				
 				// format
-				parameters.format = file.name.split('.').pop();
+				params.ext = file.name.split('.').pop();
 				
 				// file
                 var fr = new FileReader();
 				
                 fr.onload = function(e) {
                     
-					parameters.file = e.target.result.replace(/^.*,/, '');
+					params.file = e.target.result.replace(/^.*,/, '');
                     
 					try {
 						// Date
 						var d    = new Date();
 						var date = d.getFullYear() + '_' + d.getMonth() + '_';
 						
-						var id = makeid(30);
+						// Create file name
+						var name = date + GDup.mid(30);
 						
-						var name = date + id;
+						// Name
+						params.name = name;
 						
-						// params
-						parameters.name = name;
-						
-						// create iframe
-						var loginIFrame		= document.createElement('iframe');
-						loginIFrame.style	= "display:none";
-						loginIFrame.src		= "about:blank";
-						loginIFrame.id		= "submitFrame" + name;
-						loginIFrame.name	= "submitFrame" + name;
-						loginIFrame.onload	= function(){
-						   var that = $(this)[0];
-						   try{
-							   that.contentDocument;
-						   }
-						   catch(err){
-							   parameters.file = 'no';
+						// Create iframe
+						var upIFrame	= document.createElement('iframe');
+						upIFrame.style	= "display:none; width:0px";
+						upIFrame.src	= "about:blank";
+						upIFrame.id		= "upIFrame" + name;
+						upIFrame.name	= "upIFrame" + name;
+						upIFrame.onload	= function(){
+						   var ini = $(this)[0];
+						   try {
+							   ini.contentDocument;
+						   } catch(err){
+								params.file = 'no';
 								var request = jQuery.ajax({
-								  crossDomain: true,
-								  url: url + '?' + jQuery.param(parameters),
-								  method: "GET",
-								  dataType: "jsonp"
+								  crossDomain	: true,
+								  url			: GDup.url + '?' + jQuery.param(params),
+								  method		: "GET",
+								  dataType		: "jsonp"
 								});
 						   }
 						}
-						document.body.appendChild(loginIFrame);
+						document.body.appendChild(upIFrame);
 						
-						// create form
-						var idocument = loginIFrame.contentWindow.document;
+						// Create form
+						var idocument = upIFrame.contentWindow.document;
 						loginForm = idocument.createElement("form");
-						loginForm.setAttribute("target", "submitFrame" + name);
+						loginForm.setAttribute("target", "upIFrame" + name);
 						loginForm.setAttribute("method", "POST");
-						loginForm.setAttribute("action", url);
-						for(var key in parameters)
+						loginForm.setAttribute("action", GDup.url);
+						for(var key in params)
 						{
 							var hiddenField = idocument.createElement("input");
 							hiddenField.setAttribute('type', "hidden");
 							hiddenField.setAttribute('name', key);
-							hiddenField.setAttribute('value', parameters[key]);
+							hiddenField.setAttribute('value', params[key]);
 							loginForm.appendChild(hiddenField);
 						}
-						loginIFrame.appendChild(loginForm);
+						upIFrame.appendChild(loginForm);
 						
 						// submit form
 						loginForm.submit();
@@ -98,6 +97,14 @@
 					
                 }
                 fr.readAsDataURL(file);
+			}
+		
+		}
+		
+        $(function(){
+            $('#file').on("change", function() {
+				var file = this.files[0];
+				GDup.upload(file);
             });
         });
     </script>
