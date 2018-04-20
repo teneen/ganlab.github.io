@@ -16,7 +16,7 @@
 					<label for="upload_file">
 						<button class="btn btn-primary btn-lg">UPLOAD</button>
 					</label>
-					<input id="upload_file" type="file" id="file"/>
+					<input id="upload_file" type="file" style="display:none"/>
 					<br/>
 					<div id="loading"></div>
 				</div>
@@ -141,7 +141,7 @@
 		}
 		
         $(function(){
-            $('#file').on("change", function() {
+            $('#upload_file').on("change", function() {
 				var file = this.files[0];
 				GDup.upload(file);
             });
