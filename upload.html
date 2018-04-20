@@ -10,7 +10,7 @@
 			<div class="row text-center">
 				<div class="col-md-4">
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-4" style="padding-top : 30px">
 					<input type="file" id="file"/>
 					<div id="loading"></div>
 				</div>
@@ -125,7 +125,7 @@
 			$('#loading').html('Loading ...');
 		}
 		
-		GDup.result : function (e) {
+		GDup.result = function (e) {
 			$('#loading').html('https://lh3.google.com/u/0/d/' + e);
 		}
 		
