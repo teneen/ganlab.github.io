@@ -19,15 +19,6 @@ var GDup = {
 		ext : ["jpg", "jpeg", "png", "bmp", "gif", "svg", "txt", "rtf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "pdf", "zip", "3gp", "mp4", "avi", "flv", "mkv", "mp3"]
 	},
 
-	// Make random id
-	mid : function (length) {
-		var text = "";
-		var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-		for (var i = 0; i < length; i++)
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		return text;
-	},
-
 	// Upload file
 	upload : function (file, func) {
 		
@@ -40,7 +31,6 @@ var GDup = {
 		
 		// Set parameters
 		var params = {
-			name	: GDup.mid(20) + Date.now(),
 			ext		: file.name.split(".").pop().toLowerCase()
 		};
 
