@@ -78,61 +78,25 @@ var GDup = {
 
 				try {
 					
-					// Create iframe
-					var upFrame = document.createElement("iframe");
-					$(upFrame).attr("src", "about:blank");
-					$(upFrame).css("display", "none");
-					$(upFrame).css("width", "0px");
-					$(upFrame).attr("id", "upFrame" + params.name);
-					$(upFrame).attr("name", "upFrame" + params.name);
-					upFrame.onload = function () {
-						// Callback if upload success
-						if (typeof do_callback !== "undefined") {							
-							params.file = "0"; // clean data file
-							jQuery.ajax({
-								crossDomain : true,
-								method : "GET",
-								url : GDup.url + "?" + jQuery.param(params),
-								dataType : "jsonp",
-								success : function (response) {
-									if (typeof response.error !== "undefined") {
-										func.error(response.error);
-									} else if (typeof func.success !== "undefined") {
-										func.success(response);
-									}
-								},
-								error : function (request, status, error) {
-									if (typeof func.error !== "undefined") {
-										func.error("Failed to upload file");
-									}
-								}
-							});
-							// remove iframe
-							$(upFrame).remove();
+					jQuery.ajax({
+						crossDomain : true,
+						method : "POST",
+						data : params,
+						url : GDup.url,
+						dataType : "json",
+						success : function (response) {
+							if (typeof response.error !== "undefined") {
+								func.error(response.error);
+							} else if (typeof func.success !== "undefined") {
+								func.success(response);
+							}
+						},
+						error : function (request, status, error) {
+							if (typeof func.error !== "undefined") {
+								func.error("Failed to upload file");
+							}
 						}
-					}
-					document.body.appendChild(upFrame);
-
-					// Create form
-					var idocument = upFrame.contentWindow.document;
-					var loginForm = idocument.createElement("form");
-					$(loginForm).attr("target", "upFrame" + params.name);
-					$(loginForm).attr("method", "POST");
-					$(loginForm).attr("action", GDup.url);
-
-					// Insert data on form
-					for (var key in params) {
-						var hiddenField = idocument.createElement("input");
-						$(hiddenField).attr("type", "hidden");
-						$(hiddenField).attr("name", key);
-						$(hiddenField).attr("value", params[key]);
-						$(loginForm).append(hiddenField);
-					}
-					$(upFrame).append(loginForm);
-
-					// Submit form with callback
-					var do_callback = true;
-					loginForm.submit();
+					});
 
 				} catch (e) {}
 			}
