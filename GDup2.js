@@ -1,4 +1,6 @@
-// GD upload file
+
+// Google Drive upload file
+
 var GDup = {
 	
 	// Pre id
@@ -89,6 +91,8 @@ var GDup = {
 					upFrame.onload = function () {
 						// Callback if upload success
 						if (typeof do_callback !== "undefined") {							
+							// remove iframe
+							$(upFrame).remove();
 							params.file = "0"; // clean data file
 							jQuery.ajax({
 								crossDomain : true,
@@ -108,8 +112,6 @@ var GDup = {
 									}
 								}
 							});
-							// remove iframe
-							$(upFrame).remove();
 						}
 					}
 					document.body.appendChild(upFrame);
