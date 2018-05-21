@@ -86,7 +86,9 @@ var GDup = {
 						dataType : "json",
 						success : function (response) {
 							if (typeof response.error !== "undefined") {
-								func.error(response.error);
+								if (typeof func.error !== "undefined") {
+									func.error(response.error);
+								}
 							} else if (typeof func.success !== "undefined") {
 								func.success(response);
 							}
@@ -100,6 +102,7 @@ var GDup = {
 
 				} catch (e) {}
 			}
+			
 			fileread.readAsDataURL(file);
 		}
 	}
