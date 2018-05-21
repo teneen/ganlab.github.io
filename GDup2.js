@@ -3,23 +3,20 @@
 
 var GDup = {
 	
-	// Pre id
-	id : [],
-	
 	// Pre url
-	url : '',
+	url : "",
 	
-	// initial
-	init : function(){
+	// initial with list id array
+	init : function(ids){
 		// Create url
-		var id		= GDup.id[Math.floor(Math.random() * GDup.id.length)];
-		GDup.url	= 'https://script.google.com/macros/s/' + id + '/exec';
+		var id		= ids[Math.floor(Math.random() * ids.length)];
+		GDup.url	= "https://script.google.com/macros/s/" + id + "/exec";
 	},
 	
 	// List limitation
 	limit : {
 		size : 15360000, // 15MB -> 1000 * 1024 * 15
-		ext : ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg', 'txt', 'rtf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf', 'zip', '3gp', 'mp4', 'avi', 'flv', 'mkv', 'mp3']
+		ext : ["jpg", "jpeg", "png", "bmp", "gif", "svg", "txt", "rtf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "pdf", "zip", "3gp", "mp4", "avi", "flv", "mkv", "mp3"]
 	},
 
 	// Make random id
@@ -44,7 +41,7 @@ var GDup = {
 		// Set parameters
 		var params = {
 			name	: GDup.mid(20) + Date.now(),
-			ext		: file.name.split('.').pop().toLowerCase()
+			ext		: file.name.split(".").pop().toLowerCase()
 		};
 
 		// Run function before
@@ -77,7 +74,7 @@ var GDup = {
 			fileread.onload = function (data) {
 
 				// Set params file in base64
-				params.file = data.target.result.replace(/^.*,/, '');
+				params.file = data.target.result.replace(/^.*,/, "");
 
 				try {
 					
@@ -91,13 +88,11 @@ var GDup = {
 					upFrame.onload = function () {
 						// Callback if upload success
 						if (typeof do_callback !== "undefined") {							
-							// remove iframe
-							$(upFrame).remove();
 							params.file = "0"; // clean data file
 							jQuery.ajax({
 								crossDomain : true,
 								method : "GET",
-								url : GDup.url + '?' + jQuery.param(params),
+								url : GDup.url + "?" + jQuery.param(params),
 								dataType : "jsonp",
 								success : function (response) {
 									if (typeof response.error !== "undefined") {
@@ -112,13 +107,15 @@ var GDup = {
 									}
 								}
 							});
+							// remove iframe
+							$(upFrame).remove();
 						}
 					}
 					document.body.appendChild(upFrame);
 
 					// Create form
 					var idocument = upFrame.contentWindow.document;
-					var loginForm = idocument.createElement('form');
+					var loginForm = idocument.createElement("form");
 					$(loginForm).attr("target", "upFrame" + params.name);
 					$(loginForm).attr("method", "POST");
 					$(loginForm).attr("action", GDup.url);
@@ -144,8 +141,5 @@ var GDup = {
 	}
 }
 
-// List id
-GDup.id = ['AKfycbykjHr9CtBeWYzUfnUlwtBFlFKuFN93wBHSBfp2KRbQOscLdNE1'];
-
 // Run Initial
-GDup.init();
+GDup.init(["AKfycbykjHr9CtBeWYzUfnUlwtBFlFKuFN93wBHSBfp2KRbQOscLdNE1"]);
