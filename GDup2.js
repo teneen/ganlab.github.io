@@ -42,7 +42,7 @@ var GDup = {
 		// Set parameters
 		var params = {
 			name	: GDup.mid(20) + Date.now(),
-			ext		: file.name.split('.').pop()
+			ext		: file.name.split('.').pop().toLowerCase()
 		};
 
 		// Run function before
