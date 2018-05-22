@@ -61,7 +61,7 @@ var GDup = {
 			// Set parameters in formData
 			var formData = new FormData();
 			formData.append("ext", ext);
-			formData.append("file", file);
+			formData.append("image", 'uguyuiy');
 		
 				jQuery.ajax({
 					crossDomain : true,
@@ -70,7 +70,7 @@ var GDup = {
 					data : formData,
 					url : GDup.url,
 					contentType: false,
-					dataType : "json",
+					//dataType : "json",
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
 							if (typeof func.error !== "undefined") {
