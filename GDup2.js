@@ -30,7 +30,8 @@ var GDup = {
 			integer	maxSize
 			object	before(file),
 			object	error(error),
-			object	success(response)
+			object	success(response),
+			object	progress(pct)
 		*/
 		if (typeof opt === "undefined") {
 			var opt = {};
@@ -82,6 +83,18 @@ var GDup = {
 					data : params,
 					url : GDup.url,
 					dataType : "json",
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							if (evt.lengthComputable) {
+								var pct = evt.loaded / evt.total;
+								if (typeof opt.progress !== "undefined") {
+									opt.progress(pct);
+								}
+							}
+						}, false);
+						return xhr;
+					},
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
 							if (typeof opt.error !== "undefined") {
