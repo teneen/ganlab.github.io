@@ -80,18 +80,40 @@
 		
 		function fileBeforeUpload(file) {
 			GDup.upload(file, {
-				error : function (err) {
-					console.log(err);
+				before : function (file) {
+					$('#loading').html('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Uploading ...');
 				},
-				success : function (succ) {
-					console.log(succ);
+				error : function (err) {
+					$('#loading').html('');
+				},
+				success : function (e) {
+					var fileId = e.id;
+					var url = window.location.origin;
+					var idCopy = 'copy_' + fileId;
+					// Link
+					var html = '<div>';
+					html += '<div class="input-group">'+
+					'						<input type="text" id="' + idCopy  + '" class="form-control" onclick="CopyToClipboard(\'' + idCopy  + '\')" value="' + url + '/' + fileId + '"/>'+
+					'						<span class="input-group-btn">'+
+					'							<button class="btn btn-warning" onclick="CopyToClipboard(\'' + idCopy  + '\')">'+
+					'								<span class="glyphicon glyphicon-copy"></span> Copy'+
+					'							</button>'+
+					'						</span>'+
+					'						<span class="input-group-btn">'+
+					'							<a href="' + url + '/' + fileId + '" class="btn btn-success" target="_blank">'+
+					'								<span class="glyphicon glyphicon-chevron-right"></span> Open'+
+					'							</a>'+
+					'						</span>'+
+					'					</div>';
+					html += '</div>';
+					$('#file_list').append(html);
+					$('#loading').html('');
 				}
 			});
 		}
 
         $(function(){
 			var dropZone = document.getElementById('dropZone');
-
 			// Optional.   Show the copy icon when dragging over.  Seems to only work for chrome.
 			dropZone.addEventListener('dragover', function(e) {
 				e.stopPropagation();
