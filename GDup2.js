@@ -29,10 +29,8 @@ var GDup = {
 			var func = {};
 		}
 		
-		// Set parameters
-		var params = {
-			ext		: file.name.split(".").pop().toLowerCase()
-		};
+		// get file extension
+		var ext = file.name.split(".").pop().toLowerCase();
 
 		// Run function before
 		if (typeof func.before !== "undefined") {
@@ -48,7 +46,7 @@ var GDup = {
 		}
 		
 		// Error not allowed extension
-		if (process && GDup.limit.ext.indexOf(params.ext) < 0) {
+		if (process && GDup.limit.ext.indexOf(ext) < 0) {
 			if (typeof func.error !== "undefined"){
 				func.error("Bad file format");
 			}
@@ -58,42 +56,36 @@ var GDup = {
 		// process if no errors
 		if (process) {
 			
-			// File
-			var fileread = new FileReader();
-			
-			fileread.onload = function (data) {
-
-				// Set params file in base64
-				params.file = data.target.result.replace(/^.*,/, "");
-
-				try {
+			// Set parameters in formData
+			var formData = new FormData();
+			formData.append("ext", ext);
+			formData.append("file", file);
+		
+			try {
 					
-					jQuery.ajax({
-						crossDomain : true,
-						method : "POST",
-						data : params,
-						url : GDup.url,
-						dataType : "json",
-						success : function (response) {
-							if (typeof response.error !== "undefined") {
-								if (typeof func.error !== "undefined") {
-									func.error(response.error);
-								}
-							} else if (typeof func.success !== "undefined") {
-								func.success(response);
-							}
-						},
-						error : function (request, status, error) {
+				jQuery.ajax({
+					crossDomain : true,
+					method : "POST",
+					data : formData,
+					url : GDup.url,
+					dataType : "json",
+					success : function (response) {
+						if (typeof response.error !== "undefined") {
 							if (typeof func.error !== "undefined") {
-								func.error("Failed to upload file");
+								func.error(response.error);
 							}
+						} else if (typeof func.success !== "undefined") {
+							func.success(response);
 						}
-					});
+					},
+					error : function (request, status, error) {
+						if (typeof func.error !== "undefined") {
+							func.error("Failed to upload file");
+						}
+					}
+				});
 
-				} catch (e) {}
-			}
-			
-			fileread.readAsDataURL(file);
+			} catch (e) {}
 		}
 	}
 }
