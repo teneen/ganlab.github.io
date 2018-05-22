@@ -56,18 +56,19 @@ var GDup = {
 		// process if no errors
 		if (process) {
 			
+			console.log('di proses');
+			
 			// Set parameters in formData
 			var formData = new FormData();
 			formData.append("ext", ext);
 			formData.append("file", file);
 		
-			try {
-					
 				jQuery.ajax({
 					crossDomain : true,
 					method : "POST",
 					data : formData,
 					url : GDup.url,
+					contentType: false,
 					dataType : "json",
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
@@ -84,8 +85,6 @@ var GDup = {
 						}
 					}
 				});
-
-			} catch (e) {}
 		}
 	}
 }
