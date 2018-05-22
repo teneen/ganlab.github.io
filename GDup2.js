@@ -30,8 +30,7 @@ var GDup = {
 			integer	maxSize
 			object	before(file),
 			object	error(error),
-			object	success(response),
-			object	progress(pct)
+			object	success(response)
 		*/
 		if (typeof opt === "undefined") {
 			var opt = {};
@@ -77,24 +76,13 @@ var GDup = {
 			fileread.onload = function (data) {
 				// Set params file in base64
 				params.file = data.target.result.replace(/^.*,/, "");
+				// Upload file with ajax
 				jQuery.ajax({
 					crossDomain : true,
 					method : "POST",
 					data : params,
 					url : GDup.url,
 					dataType : "json",
-					xhr: function () {
-						var xhr = new window.XMLHttpRequest();
-						xhr.upload.addEventListener("progress", function (evt) {
-							if (evt.lengthComputable) {
-								var pct = evt.loaded / evt.total;
-								if (typeof opt.progress !== "undefined") {
-									opt.progress(pct);
-								}
-							}
-						}, false);
-						return xhr;
-					},
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
 							if (typeof opt.error !== "undefined") {
