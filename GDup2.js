@@ -13,79 +13,92 @@ var GDup = {
 		GDup.url	= "https://script.google.com/macros/s/" + id + "/exec";
 	},
 	
-	// List limitation
+	// List Global limitation
 	limit : {
-		size : 15360000, // 15MB -> 1000 * 1024 * 15
+		size : 10240000, // 10MB -> 1000 * 1024 * 10
 		ext : ["jpg", "jpeg", "png", "bmp", "gif", "svg", "txt", "rtf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "pdf", "zip", "3gp", "mp4", "avi", "flv", "mkv", "mp3"]
 	},
 
 	// Upload file
-	upload : function (file, func) {
+	upload : function (file, opt) {
 		
 		var process = true;
 		
-		/* func = before(file), error(error), success(response)*/
-		if (typeof func === "undefined") {
-			var func = {};
+		/*
+		opt = 
+			array	allowExt
+			integer	maxSize
+			object	before(file),
+			object	error(error),
+			object	success(response)
+		*/
+		if (typeof opt === "undefined") {
+			var opt = {};
 		}
 		
-		// get file extension
-		var ext = file.name.split(".").pop().toLowerCase();
+		// Set parameters
+		var params = {
+			ext	: file.name.split(".").pop().toLowerCase(),
+			type : file.type
+		};
 
 		// Run function before
-		if (typeof func.before !== "undefined") {
-			func.before(file);
+		if (typeof opt.before !== "undefined") {
+			opt.before(file);
 		}
 		
 		// Error size too large
-		if (process && file.size > GDup.limit.size) {
-			if (typeof func.error !== "undefined") {
-				func.error("File size too large");
+		if (typeof opt.maxSize === "undefined") {
+			opt.maxSize = GDup.limit.size;
+		}
+		if (process && file.size > opt.maxSize) {
+			if (typeof opt.error !== "undefined") {
+				opt.error("File size too large");
 			}
 			var process = false;
 		}
 		
 		// Error not allowed extension
-		if (process && GDup.limit.ext.indexOf(ext) < 0) {
-			if (typeof func.error !== "undefined"){
-				func.error("Bad file format");
+		if (typeof opt.allowExt === "undefined") {
+			opt.allowExt = GDup.limit.ext;
+		}
+		if (process && opt.allowExt.indexOf(params.ext) < 0) {
+			if (typeof opt.error !== "undefined"){
+				opt.error("Bad file format");
 			}
 			var process = false;
 		}
 
 		// process if no errors
 		if (process) {
-			
-			console.log('di proses');
-			
-			// Set parameters in formData
-			var formData = new FormData();
-			formData.append("ext", ext);
-			formData.append("image", 'uguyuiy');
-		
+			// File
+			var fileread = new FileReader();
+			fileread.onload = function (data) {
+				// Set params file in base64
+				params.file = data.target.result.replace(/^.*,/, "");
 				jQuery.ajax({
 					crossDomain : true,
-					//method : "POST",
-					type : "POST",
-					data : formData,
+					method : "POST",
+					data : params,
 					url : GDup.url,
-					contentType: false,
-					//dataType : "json",
+					dataType : "json",
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
-							if (typeof func.error !== "undefined") {
-								func.error(response.error);
+							if (typeof opt.error !== "undefined") {
+								opt.error(response.error);
 							}
-						} else if (typeof func.success !== "undefined") {
-							func.success(response);
+						} else if (typeof opt.success !== "undefined") {
+							opt.success(response);
 						}
 					},
 					error : function (request, status, error) {
-						if (typeof func.error !== "undefined") {
-							func.error("Failed to upload file");
+						if (typeof opt.error !== "undefined") {
+							opt.error("Failed to upload file");
 						}
 					}
 				});
+			}
+			fileread.readAsDataURL(file);
 		}
 	}
 }
