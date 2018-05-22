@@ -65,10 +65,12 @@ var GDup = {
 		
 				jQuery.ajax({
 					crossDomain : true,
-					method : "POST",
+					//method : "POST",
+					type : "POST",
 					data : formData,
 					url : GDup.url,
 					contentType: false,
+					dataType : "json",
 					success : function (response) {
 						if (typeof response.error !== "undefined") {
 							if (typeof func.error !== "undefined") {
