@@ -1,5 +1,5 @@
 
-// Google Drive upload file
+// G Drive upload file
 
 var GDup = {
 	
@@ -16,7 +16,7 @@ var GDup = {
 	// List Global limitation
 	limit : {
 		size : 10240000, // 10MB -> 1000 * 1024 * 10
-		ext : ["jpg", "jpeg", "png", "bmp", "gif", "svg", "txt", "rtf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "pdf", "zip", "3gp", "mp4", "avi", "flv", "mkv", "mp3"]
+		ext : ["jpg", "jpeg", "png", "bmp", "gif", "svg", "txt", "rtf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "pdf", "zip", "rar", "3gp", "mp4", "avi", "flv", "mkv", "mp3"]
 	},
 
 	// Upload file
@@ -38,7 +38,7 @@ var GDup = {
 		
 		// Set parameters
 		var params = {
-			ext	: file.name.split(".").pop().toLowerCase(),
+			name : file.name,
 			type : file.type
 		};
 
@@ -53,18 +53,25 @@ var GDup = {
 		}
 		if (process && file.size > opt.maxSize) {
 			if (typeof opt.error !== "undefined") {
-				opt.error("File size too large");
+				opt.error({
+					code : "too_large",
+					warning : "File size too large"
+				});
 			}
 			var process = false;
 		}
 		
 		// Error not allowed extension
+		var ext	= file.name.split(".").pop().toLowerCase();
 		if (typeof opt.allowExt === "undefined") {
 			opt.allowExt = GDup.limit.ext;
 		}
-		if (process && opt.allowExt.indexOf(params.ext) < 0) {
+		if (process && opt.allowExt.indexOf(ext) < 0) {
 			if (typeof opt.error !== "undefined"){
-				opt.error("Bad file format");
+				opt.error({
+					code : "bad_format",
+					warning : "Bad file format"
+				});
 			}
 			var process = false;
 		}
@@ -94,7 +101,10 @@ var GDup = {
 					},
 					error : function (request, status, error) {
 						if (typeof opt.error !== "undefined") {
-							opt.error("Failed to upload file");
+							opt.error({
+								code : "upload_failed",
+								warning : "Failed to upload file"
+							});
 						}
 					}
 				});
