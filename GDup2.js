@@ -35,12 +35,6 @@ var GDup = {
 		if (typeof opt === "undefined") {
 			var opt = {};
 		}
-		
-		// Set parameters
-		var params = {
-			name : file.name,
-			type : file.type
-		};
 
 		// Run function before
 		if (typeof opt.before !== "undefined") {
@@ -78,38 +72,79 @@ var GDup = {
 
 		// process if no errors
 		if (process) {
-			// File
-			var fileread = new FileReader();
-			fileread.onload = function (data) {
-				// Set params file in base64
-				params.file = data.target.result.replace(/^.*,/, "");
-				// Upload file with ajax
-				jQuery.ajax({
-					crossDomain : true,
-					method : "POST",
-					data : params,
-					url : GDup.url,
-					dataType : "json",
-					success : function (response) {
-						if (typeof response.error !== "undefined") {
-							if (typeof opt.error !== "undefined") {
-								opt.error(response.error);
+			
+			// Set parameters
+			var params = new FormData();
+			params.append("name", file.name);
+			params.append("type", file.type);
+			
+			// Read File
+			var reader	= new FileReader();
+			var size	= file.size;
+			var chunk_size = 1024 * 1000; // 1 MB
+			var chunks	= [];
+			var offset	= 0;
+
+			reader.onloadend = function(e){
+			
+				if (e.target.readyState == FileReader.DONE) {
+					
+					var chunk = e.target.result;
+					
+					chunks.push(chunk);
+					
+					if ((offset < size)) {
+				  
+						offset += chunk_size;
+					
+						var blob = file.slice(offset, offset + chunk_size);
+
+						reader.readAsDataURL(blob);
+
+					} else {
+
+						var content = chunks.join("");
+						
+						// Upload File
+						params.append("file", content.replace(/^.*,/, ""));
+						
+						// Upload file with ajax
+						jQuery.ajax({
+							crossDomain : true,
+							method : "POST",
+							data : params,
+							url : GDup.url,
+							dataType : "json",
+							processData : false,
+							contentType : false,
+							success : function (response) {
+								if (typeof response.error !== "undefined") {
+									if (typeof opt.error !== "undefined") {
+										opt.error(response.error);
+									}
+								} else if (typeof opt.success !== "undefined") {
+									opt.success(response);
+								}
+							},
+							error : function (request, status, error) {
+								if (typeof opt.error !== "undefined") {
+									opt.error({
+										code : "upload_failed",
+										warning : "Failed to upload file"
+									});
+								}
 							}
-						} else if (typeof opt.success !== "undefined") {
-							opt.success(response);
-						}
-					},
-					error : function (request, status, error) {
-						if (typeof opt.error !== "undefined") {
-							opt.error({
-								code : "upload_failed",
-								warning : "Failed to upload file"
-							});
-						}
-					}
-				});
-			}
-			fileread.readAsDataURL(file);
+						});
+					
+						debugger;
+					};
+				}
+
+			};
+
+			var blob = file.slice(offset, offset + chunk_size);
+			
+			reader.readAsDataURL(blob);
 		}
 	}
 }
